@@ -10,6 +10,24 @@ load_dotenv()
 
 # Get Gemini API key
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# Response style instruction
+RESPONSE_STYLE = """
+Answer the user briefly and clearly by default.
+Give only the key points needed to answer the question.
+
+Do NOT give long explanations unless the user asks for:
+- detailed explanation
+- in-depth explanation
+- more details
+- explain fully
+- elaborate
+- step-by-step explanation
+- examples in detail
+
+If the user asks for more detail, then provide a thorough and well-structured explanation.
+
+For normal questions, keep the answer around 3-6 short points or a short paragraph.
+"""
 
 if not GEMINI_API_KEY:
     st.error("GEMINI_API_KEY not found. Please check your .env file.")
@@ -158,10 +176,13 @@ if page == "💬 Career Chatbot":
                         )
 
 
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=contents
-                )
+                    response = client.models.generate_content(
+                      model="gemini-2.5-flash",
+                      contents=contents,
+                      config={
+                        "system_instruction": RESPONSE_STYLE
+                     }
+                    )
 
 
                 assistant_response = response.text
