@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from google import genai
 
 from resume_analyzer import extract_text_from_pdf
+from database import create_user, authenticate_user
 
 # Load environment variables
 load_dotenv()
@@ -36,7 +37,12 @@ if not GEMINI_API_KEY:
 
 # Create a new Gemini client
 client = genai.Client(api_key=GEMINI_API_KEY)
+# Initialize login state
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
+if "username" not in st.session_state:
+    st.session_state.username = ""
 
 # Streamlit page configuration
 st.set_page_config(
@@ -45,6 +51,114 @@ st.set_page_config(
     layout="wide"
 )
 
+# ---------------- LOGIN / SIGNUP ----------------
+
+if not st.session_state.logged_in:
+
+    st.title("🤖 AI Career Assistant")
+
+    login_tab, signup_tab = st.tabs(["🔑 Login", "📝 Sign Up"])
+
+    # ---------- LOGIN ----------
+    with login_tab:
+
+        st.subheader("Login")
+
+        email = st.text_input(
+            "Email",
+            key="login_email"
+        )
+
+        password = st.text_input(
+            "Password",
+            type="password",
+            key="login_password"
+        )
+
+        if st.button("Login"):
+
+            user = authenticate_user(
+                email,
+                password
+            )
+
+            if user:
+
+                st.session_state.logged_in = True
+                st.session_state.username = user["username"]
+
+                st.success("Login successful!")
+
+                st.rerun()
+
+            else:
+
+                st.error(
+                    "Invalid email or password."
+                )
+
+    # ---------- SIGN UP ----------
+    with signup_tab:
+
+        st.subheader("Create Account")
+
+        username = st.text_input(
+            "Username",
+            key="signup_username"
+        )
+
+        email = st.text_input(
+            "Email",
+            key="signup_email"
+        )
+
+        password = st.text_input(
+            "Password",
+            type="password",
+            key="signup_password"
+        )
+
+        confirm_password = st.text_input(
+            "Confirm Password",
+            type="password",
+            key="confirm_password"
+        )
+
+        if st.button("Create Account"):
+
+            if not username or not email or not password:
+
+                st.error(
+                    "Please fill all fields."
+                )
+
+            elif password != confirm_password:
+
+                st.error(
+                    "Passwords do not match."
+                )
+
+            else:
+
+                success = create_user(
+                    username,
+                    email,
+                    password
+                )
+
+                if success:
+
+                    st.success(
+                        "Account created successfully! Please login."
+                    )
+
+                else:
+
+                    st.error(
+                        "An account with this email already exists."
+                    )
+
+    st.stop()
 
 # Initialize chat history
 if "chat_history" not in st.session_state:
@@ -56,6 +170,17 @@ if "chat_history" not in st.session_state:
 with st.sidebar:
 
     st.title("🤖 AI Career Assistant")
+    st.write(f"👤 Welcome, {st.session_state.username}")
+
+    if st.button("🚪 Logout"):
+
+        st.session_state.logged_in = False
+        st.session_state.username = ""
+        st.session_state.chat_history = []
+
+        st.rerun()
+
+    st.divider()
     page = st.radio(
         "Choose a feature:",
         [
