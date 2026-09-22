@@ -1,0 +1,536 @@
+/* ==========================================================================
+   AI Career Assistant - Modern Professional SaaS Design System
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- 1. HIDE DEFAULT STREAMLIT CHROME (Deploy, Stop, Runner, Hamburger, Footer) --- */
+#MainMenu { visibility: hidden !important; display: none !important; }
+header { visibility: hidden !important; display: none !important; }
+footer { visibility: hidden !important; display: none !important; }
+.stDeployButton { display: none !important; }
+[data-testid="stToolbar"] { display: none !important; visibility: hidden !important; }
+[data-testid="stDecoration"] { display: none !important; visibility: hidden !important; }
+[data-testid="stStatusWidget"] { display: none !important; visibility: hidden !important; }
+[data-testid="stHeader"] { display: none !important; visibility: hidden !important; }
+div[class*="stDeployButton"] { display: none !important; }
+
+/* Main block padding reduction for fullscreen look */
+.main .block-container {
+    padding-top: 1.25rem !important;
+    padding-bottom: 2rem !important;
+    max-width: 1180px !important;
+}
+
+/* Global Font & Antialiasing */
+html, body, [class*="css"], .stMarkdown, .stTextInput, .stButton, .stRadio, .stSelectbox {
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- 2. DARK NAVY SIDEBAR STYLING --- */
+[data-testid="stSidebar"] {
+    background: #0B132B !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-testid="stSidebar"] * {
+    color: #E2E8F0 !important;
+}
+
+/* Sidebar Brand Header */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.25rem 1rem 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 1rem;
+}
+
+.sidebar-brand-icon {
+    font-size: 1.5rem;
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-brand-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #FFFFFF !important;
+    letter-spacing: -0.01em;
+}
+
+/* User Profile Badge */
+.user-profile-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+    border-radius: 12px;
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 1.25rem;
+}
+
+.user-avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+    color: #FFFFFF !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #FFFFFF !important;
+}
+
+.user-info-email {
+    font-size: 0.75rem;
+    color: #94A3B8 !important;
+}
+
+/* Sidebar Nav Radio */
+[data-testid="stSidebar"] .stRadio > div {
+    gap: 0.5rem !important;
+}
+
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label > div:first-child {
+    display: none !important;
+}
+
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label {
+    background: rgba(30, 41, 59, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    padding: 0.65rem 0.95rem !important;
+    margin: 0.2rem 0 !important;
+    transition: all 0.2s ease !important;
+    color: #E2E8F0 !important;
+    cursor: pointer !important;
+    font-size: 0.92rem !important;
+    font-weight: 500 !important;
+}
+
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover {
+    background: rgba(59, 130, 246, 0.2) !important;
+    border-color: rgba(59, 130, 246, 0.5) !important;
+    color: #FFFFFF !important;
+}
+
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:has(input:checked),
+[data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label[data-checked="true"] {
+    background: #1E3A8A !important;
+    border-color: #3B82F6 !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35) !important;
+}
+
+/* Sidebar Buttons */
+[data-testid="stSidebar"] [data-testid="stButton"] > button {
+    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(30, 41, 59, 0.75) !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    font-size: 0.88rem !important;
+    text-align: left !important;
+    padding: 0.6rem 0.85rem !important;
+    transition: all 0.15s ease !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stButton"] > button:hover {
+    border-color: #3B82F6 !important;
+    background: rgba(59, 130, 246, 0.25) !important;
+    color: #FFFFFF !important;
+    transform: translateX(2px);
+}
+
+[data-testid="stSidebar"] [data-testid="stButton"] > button[kind="primary"] {
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stButton"] > button[kind="primary"]:hover {
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%) !important;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.55) !important;
+    transform: translateY(-1px);
+}
+
+/* --- 3. AUTHENTICATION PAGE DESIGN --- */
+.auth-card-container {
+    max-width: 440px;
+    margin: 2rem auto;
+    padding: 2.25rem 2rem;
+    border-radius: 24px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.06), 0 0 1px 1px rgba(0, 0, 0, 0.02);
+}
+
+.auth-card-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin: 0 auto 1rem auto;
+}
+
+.auth-card-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.02em;
+}
+
+.auth-card-subtitle {
+    text-align: center;
+    font-size: 0.88rem;
+    color: #64748B;
+    margin-bottom: 1.5rem;
+}
+
+.auth-footer-tagline {
+    text-align: center;
+    font-size: 0.76rem;
+    color: #94A3B8;
+    margin-top: 1.5rem;
+    border-top: 1px solid #F1F5F9;
+    padding-top: 1rem;
+}
+
+/* --- 4. HERO HEADER & FEATURE STARTER CARDS --- */
+.dashboard-header {
+    text-align: center;
+    padding: 1rem 0 1.5rem 0;
+}
+
+.dashboard-header-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.25rem;
+    display: inline-block;
+}
+
+.dashboard-header-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-header-subtitle {
+    font-size: 1rem;
+    color: #64748B;
+    margin: 0;
+}
+
+/* Feature Starter Cards Grid */
+.feature-card {
+    border-radius: 16px;
+    padding: 1.25rem 1.15rem;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-card:hover {
+    border-color: #3B82F6;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(59, 130, 246, 0.12);
+}
+
+.feature-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 0.4rem;
+}
+
+.feature-card-desc {
+    font-size: 0.82rem;
+    color: #64748B;
+    line-height: 1.45;
+    margin: 0;
+}
+
+/* Start a Conversation Central Card */
+.start-conversation-card {
+    text-align: center;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    margin: 2rem auto 1rem auto;
+    max-width: 650px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+}
+
+.start-conversation-icon {
+    font-size: 2rem;
+    color: #3B82F6;
+    margin-bottom: 0.5rem;
+}
+
+.start-conversation-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 0.35rem;
+}
+
+.start-conversation-desc {
+    font-size: 0.88rem;
+    color: #64748B;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.input-tip-text {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #94A3B8;
+    margin-top: 0.5rem;
+}
+
+/* --- 5. RESUME ANALYZER DASHBOARD & CARDS --- */
+.upload-dropzone-box {
+    border: 2px dashed #93C5FD;
+    border-radius: 16px;
+    background: #F8FAFC;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.upload-dropzone-box:hover {
+    border-color: #3B82F6;
+    background: #EFF6FF;
+}
+
+.upload-icon {
+    font-size: 2.2rem;
+    color: #2563EB;
+    margin-bottom: 0.5rem;
+}
+
+.upload-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 0.2rem;
+}
+
+.upload-subtitle {
+    font-size: 0.82rem;
+    color: #64748B;
+}
+
+.upload-format-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: #E2E8F0;
+    color: #475569;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+/* Analysis Section Cards Grid */
+.analysis-card-item {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 1.25rem 1.35rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.analysis-card-item-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0F172A;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 0.45rem;
+}
+
+.analysis-card-item-body {
+    font-size: 0.85rem;
+    color: #334155;
+    line-height: 1.6;
+}
+
+.analysis-card-item-body ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.analysis-card-item-body li {
+    margin-bottom: 0.35rem;
+}
+
+/* Circular Score Badge */
+.score-circle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.score-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 5px solid #10B981;
+    background: #ECFDF5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.score-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #065F46;
+    line-height: 1;
+}
+
+.score-denom {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #059669;
+}
+
+/* Skill Tags / Pills */
+.skill-tag-pill {
+    display: inline-block;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1D4ED8;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    margin: 0.2rem 0.25rem 0.2rem 0;
+}
+
+/* Unique Features Grid (Footer area) */
+.features-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.feature-item-box {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+.feature-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #EFF6FF;
+    color: #2563EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.feature-item-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 0.15rem;
+}
+
+.feature-item-desc {
+    font-size: 0.78rem;
+    color: #64748B;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Bottom Brand Banner */
+.brand-footer-banner {
+    background: #0B132B;
+    border-radius: 14px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #FFFFFF;
+    margin-top: 1.5rem;
+}
+
+.brand-footer-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #F8FAFC;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-footer-sub {
+    font-size: 0.78rem;
+    color: #94A3B8;
+}
