@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AI Career Assistant - Modern Professional SaaS Design System
+   CareerLoom AI - Modern Professional SaaS Design System
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -14,6 +14,32 @@ footer { visibility: hidden !important; display: none !important; }
 [data-testid="stStatusWidget"] { display: none !important; visibility: hidden !important; }
 [data-testid="stHeader"] { display: none !important; visibility: hidden !important; }
 div[class*="stDeployButton"] { display: none !important; }
+
+/* Hide "Press Enter to submit form" and "Press Enter to apply" helper text */
+[data-testid="InputInstructions"],
+div[data-testid="InputInstructions"],
+span[data-testid="InputInstructions"],
+[data-testid="InputInstructions"] *,
+[data-testid="stInputInstruction"],
+[data-testid="stInputInstructions"],
+[data-testid="stFormInstructions"],
+div[class*="InputInstructions"],
+.stTextInput [data-testid="InputInstructions"],
+.stTextArea [data-testid="InputInstructions"],
+.stNumberInput [data-testid="InputInstructions"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0) !important;
+}
 
 /* Main block padding reduction for fullscreen look */
 .main .block-container {
@@ -58,6 +84,15 @@ html, body, [class*="css"], .stMarkdown, .stTextInput, .stButton, .stRadio, .stS
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.sidebar-brand-logo-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
 .sidebar-brand-title {
@@ -204,6 +239,27 @@ html, body, [class*="css"], .stMarkdown, .stTextInput, .stButton, .stRadio, .stS
     margin: 0 auto 1rem auto;
 }
 
+.auth-card-logo-wrap {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 1.15rem auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -4px rgba(37, 99, 235, 0.4);
+    border: 2px solid rgba(59, 130, 246, 0.35);
+    background: #0B132B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card-logo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .auth-card-title {
     text-align: center;
     font-size: 1.5rem;
@@ -239,6 +295,27 @@ html, body, [class*="css"], .stMarkdown, .stTextInput, .stButton, .stRadio, .stS
     font-size: 2.2rem;
     margin-bottom: 0.25rem;
     display: inline-block;
+}
+
+.dashboard-header-logo-wrap {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 0.75rem auto;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px -5px rgba(37, 99, 235, 0.4);
+    border: 2px solid rgba(59, 130, 246, 0.35);
+    background: #0B132B;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard-header-logo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .dashboard-header-title {

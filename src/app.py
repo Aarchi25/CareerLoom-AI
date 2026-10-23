@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import base64
 import importlib
 from datetime import datetime, timezone
 import streamlit as st
@@ -24,7 +25,9 @@ from database import (
     create_session,
     get_session,
     delete_session,
-    check_db_connection
+    check_db_connection,
+    is_mongodb_ready,
+    sync_sqlite_to_mongodb
 )
 from resume_analyzer import extract_text_from_pdf, get_resume_analysis_prompt, parse_resume_analysis
 
@@ -34,10 +37,22 @@ load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+# Logo & Branding Assets
+logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+
+@st.cache_data
+def get_logo_base64():
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as img_f:
+            return base64.b64encode(img_f.read()).decode("utf-8")
+    return ""
+
+LOGO_B64 = get_logo_base64()
+
 # Streamlit Page Configuration
 st.set_page_config(
-    page_title="AI Career Assistant",
-    page_icon="🤖",
+    page_title="CareerLoom AI",
+    page_icon=logo_path if os.path.exists(logo_path) else "🧶",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -50,7 +65,7 @@ if os.path.exists(css_path):
 
 # Concise Career Advisor System Instructions
 RESPONSE_STYLE = """
-You are an expert AI Career Assistant and Mentor.
+You are CareerLoom AI, an expert AI career advisor and mentor.
 Answer the user briefly, concisely, and clearly by default.
 Give only the key, high-impact points needed to answer their question directly.
 
@@ -190,11 +205,13 @@ if not st.session_state.logged_in:
     col1, col2, col3 = st.columns([1, 1.4, 1])
 
     with col2:
-        st.markdown("""
+        st.markdown(f"""
         <div class="auth-card-container">
-            <div class="auth-card-icon">🤖</div>
-            <div class="auth-card-title">AI Career Assistant</div>
-            <div class="auth-card-subtitle">Your personal AI-powered career companion</div>
+            <div class="auth-card-logo-wrap">
+                <img src="data:image/png;base64,{LOGO_B64}" alt="CareerLoom AI Logo" />
+            </div>
+            <div class="auth-card-title">CareerLoom AI</div>
+            <div class="auth-card-subtitle">Weaving Skills into Career Opportunities.</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -260,7 +277,10 @@ if not st.session_state.logged_in:
                     else:
                         new_user, err = create_user(username, email, password)
                         if new_user:
-                            st.success("🎉 Account created! Please click the Login tab to sign in.")
+                            if is_mongodb_ready():
+                                st.success("🎉 Account created in MongoDB Atlas! Please click the Login tab to sign in.")
+                            else:
+                                st.info("ℹ️ Account created in local storage. (MongoDB Atlas is currently unreachable). Click Login to sign in.")
                         elif err == "EMAIL_EXISTS":
                             st.error("An account with this email already exists.")
                         elif err == "DB_CONNECTION_ERROR":
@@ -274,16 +294,37 @@ if not st.session_state.logged_in:
         </div>
         """, unsafe_allow_html=True)
 
+        # Database Status & Cloud Sync Helper
+        if not is_mongodb_ready():
+            with st.expander("ℹ️ Cloud Database Status (MongoDB Atlas)", expanded=False):
+                st.caption(
+                    "Cloud MongoDB Atlas is currently not reachable from your network. "
+                    "Accounts are safely saved in local offline mode."
+                )
+                st.markdown(
+                    "**To enable MongoDB Atlas cloud storage:**\n"
+                    "1. Open [MongoDB Atlas Dashboard](https://cloud.mongodb.com)\n"
+                    "2. Go to **Security** → **Network Access**\n"
+                    "3. Click **Add IP Address** → Choose **Allow Access from Anywhere** (`0.0.0.0/0`) or add your current IP.\n"
+                    "4. Wait ~1 minute, then click below:"
+                )
+                if st.button("🔄 Sync Local Users to MongoDB Atlas", key="sync_local_to_atlas"):
+                    success, msg = sync_sqlite_to_mongodb()
+                    if success:
+                        st.success(msg)
+                    else:
+                        st.error(msg)
+
     st.stop()
 
 
 # ---------------- SIDEBAR NAVIGATION ----------------
 
 with st.sidebar:
-    st.markdown("""
+    st.markdown(f"""
     <div class="sidebar-brand">
-        <div class="sidebar-brand-icon">🤖</div>
-        <div class="sidebar-brand-title">AI Career Assistant</div>
+        <img src="data:image/png;base64,{LOGO_B64}" class="sidebar-brand-logo-img" alt="CareerLoom AI" />
+        <div class="sidebar-brand-title">CareerLoom AI</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -371,11 +412,13 @@ with st.sidebar:
 if st.session_state.active_page == "💬 Career Chatbot":
 
     # App Header
-    st.markdown("""
+    st.markdown(f"""
     <div class="dashboard-header">
-        <div class="dashboard-header-icon">🤖</div>
-        <div class="dashboard-header-title">AI Career Assistant</div>
-        <div class="dashboard-header-subtitle">Your personal AI-powered career companion</div>
+        <div class="dashboard-header-logo-wrap">
+            <img src="data:image/png;base64,{LOGO_B64}" alt="CareerLoom AI Logo" />
+        </div>
+        <div class="dashboard-header-title">CareerLoom AI</div>
+        <div class="dashboard-header-subtitle">Weaving Skills into Career Opportunities.</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -480,7 +523,7 @@ if st.session_state.active_page == "💬 Career Chatbot":
             if not gemini_client:
                 st.error("Gemini API client could not be initialized. Please verify GEMINI_API_KEY in .env.")
             else:
-                with st.spinner("AI Career Assistant is thinking..."):
+                with st.spinner("CareerLoom AI is thinking..."):
                     try:
                         contents = []
                         for msg in st.session_state.chat_history:
@@ -710,13 +753,14 @@ elif st.session_state.active_page == "📄 Resume Analyzer":
 
 # ---------------- FOOTER BRANDING & UNIQUE FEATURES ----------------
 
-st.markdown("""
+st.markdown(f"""
 <div class="brand-footer-banner">
     <div class="brand-footer-text">
-        <span>✨</span> Simple. Smart. Focused on Your Career.
+        <img src="data:image/png;base64,{LOGO_B64}" style="width: 24px; height: 24px; border-radius: 6px; object-fit: cover; vertical-align: middle; margin-right: 0.5rem;" alt="Logo" />
+        <span>Simple. Smart. Focused on Your Career.</span>
     </div>
     <div class="brand-footer-sub">
-        AI Career Assistant &ndash; Because your future matters.
+        CareerLoom AI &ndash; Weaving Skills into Career Opportunities.
     </div>
 </div>
 """, unsafe_allow_html=True)

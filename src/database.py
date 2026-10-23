@@ -74,14 +74,13 @@ init_sqlite_db()
 
 
 def get_db():
-    """Get or initialize the MongoDB database connection safely and quickly."""
+    """Get or initialize the MongoDB database connection safely."""
     global _client, _db, _mongo_tested, _mongo_available
-    if _mongo_tested:
-        return _db if _mongo_available else None
-
-    _mongo_tested = True
+    if _mongo_connected := (_mongo_tested and _mongo_available and _db is not None):
+        return _db
 
     if not MONGODB_URI:
+        _mongo_tested = True
         _mongo_available = False
         return None
 
@@ -89,17 +88,19 @@ def get_db():
         _client = MongoClient(
             MONGODB_URI,
             tlsCAFile=certifi.where(),
-            serverSelectionTimeoutMS=400,
-            connectTimeoutMS=400,
-            socketTimeoutMS=500
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=5000,
+            socketTimeoutMS=5000
         )
         _client.admin.command('ping')
-        _db = _client["ai_career_assistant"]
+        _db = _client["careerloom_ai"]
+        _mongo_tested = True
         _mongo_available = True
         return _db
-    except Exception:
+    except Exception as e:
         _client = None
         _db = None
+        _mongo_tested = True
         _mongo_available = False
         return None
 
@@ -107,8 +108,6 @@ def get_db():
 def is_mongodb_ready():
     """Check if MongoDB is actively connected and reachable."""
     global _mongo_tested, _mongo_available
-    if _mongo_tested:
-        return _mongo_available
     db = get_db()
     return db is not None and _mongo_available
 
@@ -505,3 +504,34 @@ def get_conversation_messages(conversation_id):
         ]
     except Exception:
         return []
+
+
+def sync_sqlite_to_mongodb():
+    """Sync all offline SQLite users to MongoDB Atlas once connected."""
+    db = get_db()
+    if not db:
+        return False, "MongoDB Atlas is still unreachable. Please whitelist your IP in Atlas Network Access."
+
+    users_col = db["users"]
+    convs_col = db["conversations"]
+    msgs_col = db["messages"]
+
+    migrated_users = 0
+    try:
+        conn = sqlite3.connect(SQLITE_DB_PATH)
+        cur = conn.cursor()
+        cur.execute("SELECT id, username, email, password, created_at FROM users")
+        for row in cur.fetchall():
+            u_id, u_name, u_email, u_pass, u_created = row
+            if not users_col.find_one({"email": u_email}):
+                users_col.insert_one({
+                    "username": u_name,
+                    "email": u_email,
+                    "password": u_pass if isinstance(u_pass, (bytes, str)) else str(u_pass).encode("utf-8"),
+                    "created_at": datetime.fromisoformat(u_created) if u_created else datetime.now(timezone.utc)
+                })
+                migrated_users += 1
+        conn.close()
+        return True, f"Successfully transferred {migrated_users} user(s) to MongoDB Atlas!"
+    except Exception as e:
+        return False, f"Sync error: {str(e)}"
